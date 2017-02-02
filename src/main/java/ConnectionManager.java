@@ -5,7 +5,7 @@ import java.util.ArrayList;
  */
 public class ConnectionManager {
     static int numberOfConnections;
-    int maxNumberOfConnections = numberOfConnections;
+    int maxNumberOfConnections =  10;
     public ConnectionManager(int maxNumberOfConnections){
         this.maxNumberOfConnections = maxNumberOfConnections;
     }
@@ -31,11 +31,11 @@ public class ConnectionManager {
         return connection;
     }
 
-    class ManagedConnection implements Connection{
+    class ManagedConnection implements Connection, java.io.Closeable{
         String IP;
         String port;
         Protocol Protocol;
-
+        ConnectionStatus connectionStatus = ConnectionStatus.OPEN;
 
         private ManagedConnection(String ip, String port){
             this.IP = ip;
@@ -50,21 +50,42 @@ public class ConnectionManager {
 
         @Override
         public String getIP() {
+            if (this.connectionStatus == ConnectionStatus.ClOSED){
+                System.out.println("Sorry this account is closed");
+            }
             return this.IP;
         }
 
         @Override
         public String getPort() {
+            if (this.connectionStatus == ConnectionStatus.ClOSED){
+                System.out.println("Sorry this account is closed");
+            }
             return this.port;
         }
 
         @Override
         public Protocol getProtocol() {
+            if (this.connectionStatus == ConnectionStatus.ClOSED){
+                System.out.println("Sorry this account is closed");
+            }
             return this.Protocol;
         }
         public String connect(){
+            if (this.connectionStatus == ConnectionStatus.ClOSED){
+                String error = "Sorry this account is closed";
+                return  error;
+            }
             String connect = "You are connected to " + this.getIP() + ":" + this.getPort() + " via " + getProtocol();
             return connect;
+        }
+        public void close(){
+            if(this.connectionStatus == ConnectionStatus.ClOSED ){
+                this.connectionStatus = ConnectionStatus.OPEN;
+            }
+            if(this.connectionStatus == ConnectionStatus.OPEN ){
+                this.connectionStatus = ConnectionStatus.ClOSED;
+            }
         }
     }
 

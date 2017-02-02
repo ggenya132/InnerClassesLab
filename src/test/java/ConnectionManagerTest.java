@@ -62,6 +62,25 @@ public class ConnectionManagerTest {
     ConnectionManager.ManagedConnection expected = null;
     ConnectionManager.ManagedConnection actual = (ConnectionManager.ManagedConnection) connectionManager.getConnection("1:1", "1:0");
     }
+    @Test
+    public void setConnectionManagerMaxPossibleIntTest2(){
+        ConnectionManager connectionManager = new ConnectionManager(2);
+        ConnectionManager.ManagedConnection managedConnection = (ConnectionManager.ManagedConnection) connectionManager.getConnection("1:1", "1:0", Protocol.FTP);
+        ConnectionManager.ManagedConnection managedConnection2 = (ConnectionManager.ManagedConnection) connectionManager.getConnection("1:1", "1:0", Protocol.FTP);
+        ConnectionManager.ManagedConnection managedConnection3 = (ConnectionManager.ManagedConnection) connectionManager.getConnection("1:1", "1:0", Protocol.FTP);
+        ConnectionManager.ManagedConnection expected = null;
+        ConnectionManager.ManagedConnection actual = (ConnectionManager.ManagedConnection) connectionManager.getConnection("1:1", "1:0");
+    }
+    @Test
+    public void setConnectionManagerTestClosedAccount(){
+        ConnectionManager connectionManager = new ConnectionManager();
+        ConnectionManager.ManagedConnection managedConnection = (ConnectionManager.ManagedConnection)connectionManager.getConnection("1", "1");
+        managedConnection.close();
+
+        String expected= "Sorry this account is closed";
+        String actual = managedConnection.connect();
+        assertEquals(actual,expected);
+    }
 
 
 
